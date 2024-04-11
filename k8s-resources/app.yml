@@ -1,0 +1,64 @@
+#please add manifests for your app here
+
+# Apps's deployment MUST be:
+#   name: camunda-app
+#   namespace: default
+#   image: local.registry/camunda-app:1.0.0
+#   imagePullPolicy: IfNotPresent
+
+# App's service MUST be:
+#   name: camunda-app
+#   namespace: default
+#   port: 2113
+
+# otherwise the test framework won't find it and kind cluster won't be able to pull it
+
+
+# camunda-app-deployment.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: camunda-app
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: camunda-app
+  template:
+    metadata:
+      labels:
+        app: camunda-app
+    spec:
+      containers:
+      - name: camunda-app
+        image: local.registry/camunda-app:1.0.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 2113
+        resources:
+          requests:
+            cpu: "100m"  # Request 100 milliCPU
+            memory: "128Mi"  # Request 128 mebibytes of memory
+          limits:
+            cpu: "200m"  # Limit to 200 milliCPU
+            memory: "256Mi"  # Limit to 256 mebibytes of memory
+
+
+---
+
+# camunda-app-service.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: camunda-app
+  namespace: default
+spec:
+  selector:
+    app: camunda-app
+  ports:
+    - protocol: TCP
+      port: 2113
+      targetPort: 2113

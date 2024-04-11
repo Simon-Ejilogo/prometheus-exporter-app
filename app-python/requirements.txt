@@ -1,0 +1,4 @@
+#please put all required Python dependencies for your app here
+prometheus-client
+requests
+python-dotenv
